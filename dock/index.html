@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OBS Track Dock</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <header class="top">
+      <div>
+        <h1>OBS Track Dock</h1>
+        <p class="sub">オーディオトラックの可視化とワンクリック切替</p>
+      </div>
+      <div class="conn">
+        <span id="status" class="status status-off">未接続</span>
+        <button type="button" id="btn-connect">接続</button>
+        <button type="button" id="btn-settings" class="ghost">設定</button>
+        <button type="button" id="btn-refresh" class="ghost">更新</button>
+      </div>
+    </header>
+
+    <section id="settings-panel" class="settings hidden">
+      <h2>接続</h2>
+      <div class="grid-3">
+        <label>ホスト<input id="cfg-host" type="text" /></label>
+        <label>ポート<input id="cfg-port" type="number" /></label>
+        <label>パスワード<input id="cfg-password" type="password" /></label>
+      </div>
+
+      <h2>トラック表示名（1〜5）</h2>
+      <div class="grid-5" id="track-name-fields"></div>
+      <p class="hint">
+        例: 1=配信 / 2=録画。BGM 検知は「配信」を許可、「録画」を禁止として使います。
+      </p>
+      <button type="button" id="btn-save-settings">保存して閉じる</button>
+    </section>
+
+    <section class="legend">
+      <span class="pill ok">正常</span>
+      <span class="pill warn">BGM 警告</span>
+      <span class="hint">名前に BGM を含むソースは、配信ON・録画OFF が正解です。</span>
+    </section>
+
+    <main>
+      <div class="table-wrap">
+        <table id="matrix">
+          <thead>
+            <tr id="matrix-head"></tr>
+          </thead>
+          <tbody id="matrix-body"></tbody>
+        </table>
+      </div>
+      <p id="empty" class="empty hidden">音声ソースがありません。接続するか更新してください。</p>
+    </main>
+
+    <dialog id="new-source-dialog">
+      <form method="dialog" id="new-source-form">
+        <h2>新しいソースのトラック</h2>
+        <p id="new-source-name" class="sub"></p>
+        <div id="new-source-toggles" class="new-toggles"></div>
+        <div class="presets">
+          <button type="button" data-preset="stream">配信のみ</button>
+          <button type="button" data-preset="record">録画のみ</button>
+          <button type="button" data-preset="both">両方</button>
+          <button type="button" data-preset="all-off">すべてOFF</button>
+        </div>
+        <div class="dialog-actions">
+          <button type="submit" value="cancel" class="ghost">スキップ</button>
+          <button type="submit" value="ok" class="primary">適用</button>
+        </div>
+      </form>
+    </dialog>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
