@@ -1,20 +1,17 @@
 const STORAGE_KEY = "obs-track-dock-v1";
-const TRACK_COUNT = 5;
+const TRACK_COUNT = TrackConfig.TRACK_COUNT;
 const CONNECT_TIMEOUT_MS = 8000;
 const REQUEST_TIMEOUT_MS = 8000;
 
-const defaultConfig = () => ({
-  host: "127.0.0.1",
-  port: 4455,
-  password: "",
-  trackNames: ["配信", "録画", "トラック3", "トラック4", "トラック5"],
-});
+const defaultConfig = TrackConfig.defaultConfig;
 
 const els = {
   status: document.getElementById("status"),
   btnConnect: document.getElementById("btn-connect"),
   btnSettings: document.getElementById("btn-settings"),
   btnRefresh: document.getElementById("btn-refresh"),
+  btnHelp: document.getElementById("btn-help"),
+  helpDialog: document.getElementById("help-dialog"),
   btnSaveSettings: document.getElementById("btn-save-settings"),
   settingsPanel: document.getElementById("settings-panel"),
   trackNameFields: document.getElementById("track-name-fields"),
@@ -44,7 +41,7 @@ function loadConfig() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return defaultConfig();
-    return { ...defaultConfig(), ...JSON.parse(raw) };
+    return TrackConfig.migrateConfig(JSON.parse(raw));
   } catch {
     return defaultConfig();
   }
@@ -540,8 +537,8 @@ async function setTracks(inputName, tracks) {
   for (let i = 1; i <= TRACK_COUNT; i++) {
     payload[String(i)] = !!tracks[String(i)];
   }
-  // Keep track 6 unchanged if present - send false or omit?
-  // API replaces provided keys; send only 1-5 and leave 6 as-is by first getting full
+  // SetInputAudioTracks updates only the keys we send. Tracks 1–6 are
+  // explicit; any other key OBS returns is left unchanged.
   try {
     const current = await request("GetInputAudioTracks", { inputName });
     const merged = { ...(current.inputAudioTracks || {}), ...payload };
@@ -625,6 +622,10 @@ function applyPreset(kind) {
     }
   }
 }
+
+els.btnHelp.addEventListener("click", () => {
+  if (!els.helpDialog.open) els.helpDialog.showModal();
+});
 
 els.btnSettings.addEventListener("click", () => {
   const opening = els.settingsPanel.classList.contains("hidden");

@@ -156,7 +156,7 @@ body.settings-open .settings h2 {
 }
 
 .grid-3,
-.grid-5 {
+.grid-6 {
   display: grid;
   gap: 0.45rem;
 }
@@ -165,8 +165,8 @@ body.settings-open .settings h2 {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
-.grid-5 {
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+.grid-6 {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
 }
 
 label {
@@ -326,11 +326,25 @@ dialog {
   width: min(420px, 92vw);
 }
 
+#help-dialog {
+  width: min(520px, 92vw);
+}
+
+.help-list {
+  margin: 0;
+  padding-left: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  font-size: 0.88rem;
+}
+
 dialog::backdrop {
   background: rgba(30, 28, 24, 0.35);
 }
 
-#new-source-form {
+#new-source-form,
+#help-form {
   padding: 1rem;
   display: flex;
   flex-direction: column;
@@ -355,7 +369,7 @@ dialog::backdrop {
 }
 
 @media (max-width: 720px) {
-  .grid-5 {
+  .grid-6 {
     grid-template-columns: 1fr 1fr;
   }
 }
