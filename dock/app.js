@@ -1,9 +1,14 @@
 const STORAGE_KEY = "obs-track-dock-v1";
-const TRACK_COUNT = TrackConfig.TRACK_COUNT;
+const TRACK_COUNT = 6;
 const CONNECT_TIMEOUT_MS = 8000;
 const REQUEST_TIMEOUT_MS = 8000;
 
-const defaultConfig = TrackConfig.defaultConfig;
+const defaultConfig = () => ({
+  host: "127.0.0.1",
+  port: 4455,
+  password: "",
+  trackNames: ["配信", "録画", "トラック3", "トラック4", "トラック5", "トラック6"],
+});
 
 const els = {
   status: document.getElementById("status"),
@@ -41,7 +46,7 @@ function loadConfig() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return defaultConfig();
-    return TrackConfig.migrateConfig(JSON.parse(raw));
+    return { ...defaultConfig(), ...JSON.parse(raw) };
   } catch {
     return defaultConfig();
   }
