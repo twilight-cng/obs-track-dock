@@ -1,8 +1,9 @@
-name: Attach bundled dock HTML
+name: Attach dock HTML and README
 
 # Release 作成時に dock/ の 3 ファイルを 1 つの HTML へ結合し、その Release の
-# Asset として obs-track-dock.html を付ける。開発ツリーは 3 ファイルのまま。
-# 手動再添付は Actions の workflow_dispatch でタグを指定する。
+# Asset として obs-track-dock.html と、そのタグの README.md を付ける。
+# 開発ツリーは 3 ファイルのまま。README の内容はこのワークフローでは変えない。
+# 手動再添付は Actions の workflow_dispatch でタグを指定する。同じファイル名は上書きする。
 
 on:
   release:
@@ -13,7 +14,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: "再添付する Release のタグ（例: v1.0.0）"
+        description: "再添付する Release のタグ（例: v0.1.0）。obs-track-dock.html と README.md を上書きする"
         required: true
         type: string
 
@@ -70,11 +71,13 @@ jobs:
       - name: Bundle dock into one HTML file
         run: node bundler/scripts/bundle-dock.js --dock sources/dock --out obs-track-dock.html
 
-      - name: Upload obs-track-dock.html to the release
+      - name: Upload obs-track-dock.html and README.md to the release
         env:
           GH_TOKEN: ${{ github.token }}
           TAG: ${{ steps.tag.outputs.tag }}
           REPO: ${{ github.repository }}
         run: |
+          test -s obs-track-dock.html
+          test -s sources/README.md
           gh release view "$TAG" --repo "$REPO" >/dev/null
-          gh release upload "$TAG" obs-track-dock.html --repo "$REPO" --clobber
+          gh release upload "$TAG" obs-track-dock.html sources/README.md --repo "$REPO" --clobber
