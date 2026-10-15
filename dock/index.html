@@ -16,6 +16,7 @@
         <span id="status" class="status status-off">未接続</span>
         <button type="button" id="btn-connect">接続</button>
         <button type="button" id="btn-settings" class="ghost" aria-expanded="false">設定</button>
+        <button type="button" id="btn-help" class="ghost">ヒント</button>
         <button type="button" id="btn-refresh" class="ghost">更新</button>
       </div>
     </header>
@@ -28,8 +29,8 @@
         <label>パスワード<input id="cfg-password" type="password" /></label>
       </div>
 
-      <h2>トラック表示名（1〜5）</h2>
-      <div class="grid-5" id="track-name-fields"></div>
+      <h2>トラック表示名（1〜6）</h2>
+      <div class="grid-6" id="track-name-fields"></div>
       <p class="hint">
         例: 1=配信 / 2=録画。BGM 検知は「配信」を許可、「録画」を禁止として使います。
       </p>
@@ -68,6 +69,23 @@
         <div class="dialog-actions">
           <button type="submit" value="cancel" class="ghost">スキップ</button>
           <button type="submit" value="ok" class="primary">適用</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="help-dialog">
+      <form method="dialog" id="help-form">
+        <h2>トラックの使い方</h2>
+        <ol class="help-list">
+          <li>OBS の音声はトラック 1〜6 です。表の列がそのまま対応します。</li>
+          <li>チェックを入れると、そのソースの音がそのトラックに載ります。外すと、そのトラックには乗りません。</li>
+          <li>列の名前は「設定」で変えられます。初期値は 1=配信、2=録画、3〜6=トラック3〜6 です。</li>
+          <li>配信や録画ファイルにどのトラックを含めるかは、OBS の出力設定で決まります。このドックは、ソースをどのトラックへ乗せるかを切り替えます。</li>
+          <li>ソース名に BGM が含まれるときの目安は、名前が「配信」または stream の列は ON、「録画」「record」「vod」の列は OFF です。違うと行が警告色になります。</li>
+          <li>ソースを追加した直後は、配信のみ / 録画のみ / 両方 / すべてOFF から選べます。</li>
+        </ol>
+        <div class="dialog-actions">
+          <button type="submit" class="primary" value="close">閉じる</button>
         </div>
       </form>
     </dialog>
