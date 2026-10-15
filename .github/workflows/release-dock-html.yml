@@ -1,0 +1,80 @@
+name: Attach bundled dock HTML
+
+# Release 作成時に dock/ の 3 ファイルを 1 つの HTML へ結合し、その Release の
+# Asset として obs-track-dock.html を付ける。開発ツリーは 3 ファイルのまま。
+# 手動再添付は Actions の workflow_dispatch でタグを指定する。
+
+on:
+  release:
+    # UI で下書き保存してから公開すると created は飛ばない。直接公開すると
+    # created と published の両方が来ることがある。同じタグは concurrency で直列化し、
+    # 後から走った方は --clobber で同じファイル名を上書きする。
+    types: [created, published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "再添付する Release のタグ（例: v1.0.0）"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: attach-dock-html-${{ case(github.event_name == 'workflow_dispatch', github.event.inputs.tag, github.event.release.tag_name) }}
+  cancel-in-progress: false
+
+jobs:
+  attach:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Resolve release tag
+        id: tag
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+          INPUT_TAG: ${{ inputs.tag }}
+        run: |
+          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+            TAG="$INPUT_TAG"
+          else
+            TAG="$RELEASE_TAG"
+          fi
+          case "$TAG" in
+            ""|-*)
+              echo "タグ名が空か、ハイフン始まりです: ${TAG}" >&2
+              exit 1
+              ;;
+          esac
+          printf '%s' "$TAG" | grep -Eq '^[0-9A-Za-z._/+-]+$' || {
+            echo "タグ名に使えない文字があります: ${TAG}" >&2
+            exit 1
+          }
+          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout bundler
+        uses: actions/checkout@v4
+        with:
+          # release イベントの github.sha はタグのコミットで、workflow ファイル自体は
+          # デフォルトブランチのものが使われる。結合スクリプトは workflow と同じ側から取る。
+          # 手動実行は、実行時に選んだブランチのスクリプトを使う。
+          ref: ${{ case(github.event_name == 'workflow_dispatch', github.sha, github.event.repository.default_branch) }}
+          path: bundler
+
+      - name: Checkout release sources
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.tag.outputs.tag }}
+          path: sources
+
+      - name: Bundle dock into one HTML file
+        run: node bundler/scripts/bundle-dock.js --dock sources/dock --out obs-track-dock.html
+
+      - name: Upload obs-track-dock.html to the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.tag.outputs.tag }}
+          REPO: ${{ github.repository }}
+        run: |
+          gh release view "$TAG" --repo "$REPO" >/dev/null
+          gh release upload "$TAG" obs-track-dock.html --repo "$REPO" --clobber
