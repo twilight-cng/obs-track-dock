@@ -275,41 +275,71 @@ tr.warn-row td:first-child {
   font-size: 0.74rem;
 }
 
-.toggle {
-  appearance: none;
-  width: 2.4rem;
-  height: 1.35rem;
-  border-radius: 999px;
-  background: #cfc6b8;
-  position: relative;
+.toggle-cell {
+  height: 1px;
+  padding: 0;
   cursor: pointer;
-  border: 1px solid #b7ae9f;
 }
 
-.toggle::after {
-  content: "";
-  position: absolute;
-  top: 1px;
-  left: 2px;
-  width: 1.05rem;
-  height: 1.05rem;
+.toggle-cell .toggle-hit {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  height: 100%;
+  min-height: 2.2rem;
+  margin: 0;
+  cursor: pointer;
+}
+
+.toggle {
+  appearance: none;
+  width: 1.1rem;
+  height: 1.1rem;
+  margin: 0;
   border-radius: 50%;
+  border: 2px solid #b7ae9f;
   background: #fff;
-  transition: transform 0.15s ease;
+  cursor: pointer;
+  vertical-align: middle;
+  transition: background 0.12s, border-color 0.12s;
 }
 
 .toggle:checked {
   background: #1f6b4f;
-  border-color: #1f6b4f;
-}
-
-.toggle:checked::after {
-  transform: translateX(1rem);
+  border-color: #b7ae9f;
 }
 
 .toggle.warn-on:checked {
   background: #c45a1a;
-  border-color: #c45a1a;
+  border-color: #b7ae9f;
+}
+
+.toggle:hover,
+.toggle:checked:hover,
+.toggle.warn-on:checked:hover,
+.toggle-cell:hover .toggle {
+  border-color: #1f6b4f;
+}
+
+.toggle:focus-visible {
+  outline: 2px solid #1f6b4f;
+  outline-offset: 2px;
+}
+
+.new-toggles .toggle {
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 4px;
+}
+
+.new-toggles .toggle:checked {
+  background-color: #1f6b4f;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.2 8.2 6.4 11.3 12.8 4.7' fill='none' stroke='%23fff' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 0.85rem 0.85rem;
 }
 
 .empty {
