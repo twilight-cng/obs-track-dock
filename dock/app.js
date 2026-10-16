@@ -151,6 +151,9 @@ function renderMatrix() {
 
     for (let i = 1; i <= TRACK_COUNT; i++) {
       const td = document.createElement("td");
+      td.className = "toggle-cell";
+      const hit = document.createElement("label");
+      hit.className = "toggle-hit";
       const toggle = document.createElement("input");
       toggle.type = "checkbox";
       toggle.className = "toggle";
@@ -171,7 +174,8 @@ function renderMatrix() {
           setStatus("off", String(err.message || err));
         }
       });
-      td.appendChild(toggle);
+      hit.appendChild(toggle);
+      td.appendChild(hit);
       tr.appendChild(td);
     }
 

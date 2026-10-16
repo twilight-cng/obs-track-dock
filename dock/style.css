@@ -275,10 +275,28 @@ tr.warn-row td:first-child {
   font-size: 0.74rem;
 }
 
+.toggle-cell {
+  height: 1px;
+  padding: 0;
+  cursor: pointer;
+}
+
+.toggle-cell .toggle-hit {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  height: 100%;
+  min-height: 2.2rem;
+  margin: 0;
+  cursor: pointer;
+}
+
 .toggle {
   appearance: none;
-  width: 1.25rem;
-  height: 1.25rem;
+  width: 1.1rem;
+  height: 1.1rem;
   margin: 0;
   border-radius: 50%;
   border: 2px solid #b7ae9f;
@@ -300,7 +318,8 @@ tr.warn-row td:first-child {
 
 .toggle:hover,
 .toggle:checked:hover,
-.toggle.warn-on:checked:hover {
+.toggle.warn-on:checked:hover,
+.toggle-cell:hover .toggle {
   border-color: #1f6b4f;
 }
 
@@ -310,6 +329,8 @@ tr.warn-row td:first-child {
 }
 
 .new-toggles .toggle {
+  width: 1.25rem;
+  height: 1.25rem;
   border-radius: 4px;
 }
 
