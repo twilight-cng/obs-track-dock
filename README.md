@@ -18,7 +18,7 @@ OBS のオーディオトラック（1〜6）を、わかりやすい表示名�
 
 例:
 ```
-file:///C:/Users/ユーザー名/Desktop/obs-track-dock/dock/obs-track-dock.html
+file:///C:/Users/ユーザー名/Desktop/obs-track-dock.html
 ```
 
 6. ドック内の **設定** でホスト・ポート・パスワード、トラック表示名を保存
